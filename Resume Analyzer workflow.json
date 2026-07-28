@@ -1,0 +1,163 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "n8nUserAuth",
+        "formTitle": "RESUME ANALYZER",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "NAME",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "E-MAIL",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "RESUME",
+              "fieldType": "file",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Job Description",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ec1e3015-372b-453e-b6bf-35db4e26680d",
+      "name": "On form submission",
+      "webhookId": "e10abce5-b149-42f2-9d02-a544937d2032"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "RESUME",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3c545737-e487-4c2c-9bfb-cb0c53b95aef",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a experienced resume analyst with the 10 years of experience please analyze this resume against the job description and give the ATS Score, skill match, project match, suggestions and missing keywords, relevant jobs for the resume. {{ $json.text }}\n{{ $('On form submission').item.json['Job Description'] }}\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f450a324-01e8-4b6e-ae30-e788486f9b3a",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "kmzYVXvIvumtOScM",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.user.email }}",
+        "subject": "Resume feedback",
+        "message": "={{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "2003fa9a-b7d1-4e92-ba49-4060f9423950",
+      "name": "Send a message",
+      "webhookId": "c324d797-367c-45c9-8bd6-0a0e6d18f1bc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EDYiBupxCH48HPen",
+          "name": "Gmail account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "998261e2-2f73-4232-9dde-5546169567e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d653cd45ac593733f4a3e4d9d5508d2b89b9f426e82ede0fdef94ed9e0e1338d"
+  },
+  "nodeGroups": [],
+  "id": "W1qObTn7NGO0Z3Kc",
+  "tags": []
+}
