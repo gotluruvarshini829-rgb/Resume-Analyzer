@@ -105,7 +105,7 @@ The generated analysis is automatically sent to the user's email.
 
 ## 📁 Workflow Screenshot
 
-
+![Workflow image][workflow.png]
 ## 🎯 Use Cases
 
 - Resume Screening
