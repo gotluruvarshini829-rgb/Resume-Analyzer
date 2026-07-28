@@ -24,20 +24,14 @@ This project helps recruiters, students, and job seekers quickly evaluate resume
 
 
 Form Submission
-
        │
        ▼
-       
 Extract Text from PDF
-
        │
        ▼
-       
 AI Resume Analysis
-
        │
        ▼
-       
 Email Analysis Report
 
 ## ✨ Features
